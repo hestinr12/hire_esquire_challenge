@@ -17,5 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
+    url(r'^time_keeper/', include('time_keeper.urls', namespace='time_keeper')),
     url(r'^admin/', include(admin.site.urls)),
 ]
