@@ -31,4 +31,5 @@ class TimeEntry(models.Model):
             self.date_stamp)
 
 def unit_string(count, string):
+    """Naive pluaralize..."""
     return  string if count == 1 else "{}s".format(string)
