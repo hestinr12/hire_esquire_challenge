@@ -29,7 +29,7 @@ def new_job(request):
     '''render form for Job'''
     pass
 
-def create_job(request, uuid):
+def create_job(request):
     '''add Job and redirect success/fail'''
     pass
 
@@ -47,7 +47,7 @@ def delete_job(request, uuid):
             message = 'Object exists, but deletion failed.'
     else:
         return HttpResponseBadRequest('SWAP GET FOR POST IN delete_job') # todo
-    return render(request, 'time_keeper/message.html', {'message': message})
+    return redirect(reverse('time_keeper:job_index'))
 
 def list_time_entrys(request):
     time_entries = TimeEntry.objects.all()
