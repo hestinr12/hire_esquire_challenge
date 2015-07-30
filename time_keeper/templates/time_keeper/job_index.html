@@ -1,5 +1,9 @@
 <table border=1>
 	{% for job in jobs %}
+		<th>UUID</th>
+		<th>Title</th> 
+		<th>Total Minutes</th> 
+		<th>Actions</th> 
 		<tr>
 			<td>{{ job.id }}</td>
 			<td>{{ job.title }}</td>

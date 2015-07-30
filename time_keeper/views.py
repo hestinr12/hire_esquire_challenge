@@ -1,5 +1,6 @@
 from django.shortcuts import get_list_or_404, get_object_or_404, \
     redirect, render
+from django.core.urlresolvers import reverse 
 from django.http import HttpResponseBadRequest
 
 from .models import Job, TimeEntry
