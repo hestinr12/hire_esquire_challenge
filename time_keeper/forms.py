@@ -1,16 +1,21 @@
 from .models import Job, TimeEntry
-from djangoi.forms import ModelForm
+from django.forms import ModelForm, HiddenInput
 
 
 class JobForm(ModelForm):
     class Meta:
         model = Job
-        fields = ['title']
+        fields = [
+            'title',
+        ]
+
 
 class TimeEntryForm(ModelForm):
     class Meta:
         model = TimeEntry
-        fields = ['work_summary',
+        fields = [
+            'work_summary',
             'date_stamp',
             'minutes_worked',
-            'related_job']
+            'related_job',
+        ]

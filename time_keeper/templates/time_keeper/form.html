@@ -1,0 +1,14 @@
+{% if message %}
+	<h1>{{ message }}</h1>
+	<br/>
+{% endif %}
+{% if url_arg %}
+<form method='POST' action={% url forward_address url_arg %} >
+{% else %}
+<form method='POST' action={% url forward_address %} >
+{% endif %}
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type=submit value='Submit' />
+</form>
+

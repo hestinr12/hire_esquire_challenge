@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest
 
 from .models import Job, TimeEntry
+from .forms import JobForm, TimeEntryForm
 
 # Create your views here.
 
@@ -26,16 +27,46 @@ def read_job(request, uuid):
     job = get_object_or_404(Job, id=uuid)
     return render(request, 'time_keeper/job_detail.html', {'job': job})
 
-def new_job(request):
-    '''render form for Job'''
-    pass
-
 def create_job(request):
-    '''add Job and redirect success/fail'''
-    pass
+    '''
+    GET: Send form 
+    POST: Process form'''
+
+    if request.method == "GET":
+        form = JobForm()
+    elif request.method == "POST":
+        form = JobForm(request.POST)
+        if form.is_valid():
+            job = form.save()
+            return redirect(reverse('time_keeper:job_detail', args=(job.id,)))
+    
+    return render(request, 'time_keeper/form.html', {
+        'message': 'New Job',
+        'forward_address': 'time_keeper:job_create',
+        'form': form,
+    })
 
 def update_job(request, uuid):
-    pass
+    '''
+    GET: Send form from model
+    POST: Update model from form'''
+    
+    job = Job.objects.get(pk=uuid)
+    
+    if request.method == "GET":
+        form = JobForm(instance=job)
+    elif request.method == "POST":
+        form = JobForm(request.POST, instance=job)
+        if form.is_valid():
+            job = form.save()
+            return redirect(reverse('time_keeper:job_detail', args=(job.id,)))
+
+    return render(request, 'time_keeper/form.html', {
+        'message': 'Update Job',
+        'forward_address': 'time_keeper:job_update',
+        'url_arg': uuid,
+        'form': form,
+    })
 
 def delete_job(request, uuid):
     if request.method == "GET":
