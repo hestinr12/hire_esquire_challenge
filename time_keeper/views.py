@@ -131,7 +131,9 @@ def delete_time_entry(request, pk):
         time_entry = get_object_or_404(TimeEntry, pk=pk)
         message = ''
         try:
+            job = time_entry.related_job
             time_entry.delete()
+            job.updateTotalMinutes()
             message = 'Delete successful.'
         except:
             message = 'Object exists, but deletion failed.'
