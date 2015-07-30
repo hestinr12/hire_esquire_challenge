@@ -33,13 +33,48 @@ class JobMethodTests(TestCase):
 class JobViewTests(TestCase):
     
     def test_job_list_view_with_no_jobs(self):
-        pass
+        response = self.client.get(reverse('time_keeper:job_index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "<td>")
+        self.assertQuerysetEqual(response.context['jobs'], [])
 
     def test_job_list_view_with_job_no_time_entry(self):
-        pass
+        job = create_job(title="test title")
+        response = self.client.get(reverse('time_keeper:job_index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test title")
+        self.assertQuerysetEqual(response.context['jobs'], 
+            ["<Job: {}>".format(str(job))])
 
     def test_job_list_view_with_job_and_time_entry(self):
-        pass
+        job = create_job(title="test title")
+        response = self.client.get(reverse('time_keeper:job_index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test title")
+        self.assertQuerysetEqual(response.context['jobs'], 
+            ["<Job: {}>".format(str(job))])
+   
+    def test_job_read_view(self):
+        job = create_job(title="test title")
+        response = self.client.get(reverse('time_keeper:job_detail', 
+            args=[job.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test title")
+    
+    def test_job_update_view_get(self):
+        job = create_job(title="test title")
+        response = self.client.get(reverse('time_keeper:job_update', 
+            args=[job.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test title")
+    
+    def test_job_delete_view_get(self):
+        job = create_job(title="test title")
+        response = self.client.get(reverse('time_keeper:job_delete',
+            args=[job.id]), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "test title")
+
 
 
 class JobFormTests(TestCase):
