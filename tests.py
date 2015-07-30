@@ -4,19 +4,30 @@ from django.utils import timezone
 from django.test import TestCase                                                   
 from django.core.urlresolvers import reverse                                       
                                                                                    
-from .models import Job, TimeEntry, unit_string
+from time_keeper.models import Job, TimeEntry, unit_string
 
+
+def create_time_entry(minutes_worked, job):
+    return TimeEntry.objects.create(minutes_worked=10, related_job=job, 
+        date_stamp=timezone.now())
+
+def create_job(title=''):
+    return Job.objects.create(title=title)
 
 class JobMethodTests(TestCase):
 
-    def test_update_total_minutes_on_time_entry_create(self):
-        pass
-
-    def test_update_total_minutes_on_time_entry_delete(self):
-        pass
-
-    def test_update_total_minutes_on_time_entry_update(self):
-        pass
+    def test_update_total_minutes(self):
+        job = create_job()
+        job.updateTotalMinutes()
+        self.assertEqual(job.total_minutes, 0)
+        
+        entry = create_time_entry(10, job)
+        job.updateTotalMinutes()
+        self.assertEqual(job.total_minutes, 10)
+        
+        entry = create_time_entry(10, job)
+        job.updateTotalMinutes()
+        self.assertEqual(job.total_minutes, 20)
 
 
 class JobViewTests(TestCase):
