@@ -2,6 +2,7 @@ import datetime
 import uuid
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils import timezone
 
 # Create your models here.
@@ -16,6 +17,7 @@ class Job(models.Model):
         unit = unit_string(self.total_minutes, 'minute')
         return "{} - {} {}".format(self.title, self.total_minutes, unit)
 
+
 class TimeEntry(models.Model):
     minutes_worked = models.PositiveSmallIntegerField()
     date_stamp = models.DateField()
@@ -29,6 +31,22 @@ class TimeEntry(models.Model):
             self.minutes_worked,
             unit,
             self.date_stamp)
+
+
+class JobForm(ModelForm):                                                          
+    class Meta:                                                                    
+            model = Job                                                                
+            fields = ['title'] 
+
+
+class TimeEntryForm(ModelForm):
+    class Meta:
+        model = TimeEntry
+        fields = ['work_summary', 
+            'date_stamp', 
+            'minutes_worked', 
+            'related_job']
+
 
 def unit_string(count, string):
     """Naive pluaralize..."""

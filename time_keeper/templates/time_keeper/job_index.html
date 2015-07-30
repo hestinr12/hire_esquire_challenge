@@ -1,0 +1,16 @@
+<table border=1>
+	{% for job in jobs %}
+		<tr>
+			<td>{{ job.id }}</td>
+			<td>{{ job.title }}</td>
+			<td>{{ job.total_minutes }}</td>
+			<td>
+				<a href={% url 'time_keeper:job_detail' job.id %}>Read</a> 
+				<a href={% url 'time_keeper:job_update' job.id %}>Update</a> 
+				<a href={% url 'time_keeper:job_delete' job.id %}>Delete</a>
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+</br>
+<a href={% url 'time_keeper:job_create' %}>Create New</a>
