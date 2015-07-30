@@ -2,7 +2,6 @@ import datetime
 import uuid
 
 from django.db import models
-from django.forms import ModelForm
 from django.utils import timezone
 
 # Create your models here.
@@ -31,21 +30,6 @@ class TimeEntry(models.Model):
             self.minutes_worked,
             unit,
             self.date_stamp)
-
-
-class JobForm(ModelForm):                                                          
-    class Meta:                                                                    
-            model = Job                                                                
-            fields = ['title'] 
-
-
-class TimeEntryForm(ModelForm):
-    class Meta:
-        model = TimeEntry
-        fields = ['work_summary', 
-            'date_stamp', 
-            'minutes_worked', 
-            'related_job']
 
 
 def unit_string(count, string):
