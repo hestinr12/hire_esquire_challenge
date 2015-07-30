@@ -9,15 +9,7 @@ from .forms import JobForm, TimeEntryForm
 # Create your views here.
 
 def entry(request):
-    return render(request, 'time_keeper/index.html', {
-            'objects': [
-                '/admin',
-                '/job'
-                '/job/...',
-                '/time_entry'
-                '/time_entry/...'
-            ]
-        })
+    return render(request, 'time_keeper/index.html')
 
 def list_jobs(request):
     jobs = Job.objects.all()

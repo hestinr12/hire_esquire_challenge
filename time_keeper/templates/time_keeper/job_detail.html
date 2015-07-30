@@ -2,11 +2,18 @@
   <th>UUID</th>                                                                    
   <th>Title</th>                                                                   
   <th>Total Minutes</th>                                                           
-  <tr>                                                                           
+  <th>Time Entry List</th>
+	<tr>                                                                           
     <td>{{ job.id }}</td>                                                        
     <td>{{ job.title }}</td>                                                     
-    <td>{{ job.total_minutes }}</td>                                             
+    <td>{{ job.total_minutes }}</td>
+		<td>
+			<ul>
+			{% for entry in job.timeentry_set.all %}
+				<li><a href={% url 'time_keeper:time_entry_detail' entry.pk %}>{{ entry }}</a></li>
+			{% endfor %}
+			</ul>                                       
   </tr>                                                                          
 </table>  
 <br/>
-<a href={% url 'time_keeper:job_index' %}>Back</a>
+<a href={% url 'time_keeper:job_index' %}>Job</a>

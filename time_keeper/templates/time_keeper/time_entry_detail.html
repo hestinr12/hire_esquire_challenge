@@ -9,8 +9,8 @@
     <td>{{ time_entry.date_stamp }}</td>                                               
     <td>{{ time_entry.minutes_worked }}</td>                                          
     <td>{{ time_entry.work_summary }}</td>                                            
-    <td>{{ time_entry.related_job }}</td>                                             
+    <td><a href={% url 'time_keeper:job_detail' time_entry.related_job.id %}>{{ time_entry.related_job }}</a></td>                                             
   </tr>                                                                          
 </table>                                                                           
 </br>                                                                              
-<a href={% url 'time_keeper:time_entry_index' %}>Back</a> 
+<a href={% url 'time_keeper:time_entry_index' %}>Time Entry</a> 
