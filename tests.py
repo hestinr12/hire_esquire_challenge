@@ -7,9 +7,10 @@ from django.core.urlresolvers import reverse
 from time_keeper.models import Job, TimeEntry, unit_string
 
 
-def create_time_entry(minutes_worked, job):
+def create_time_entry(minutes_worked, job, work_summary):
     return TimeEntry.objects.create(minutes_worked=10, related_job=job, 
-        date_stamp=timezone.now())
+        date_stamp=str(timezone.now()).split(" ")[0], 
+        work_summary=work_summary)
 
 def create_job(title=''):
     return Job.objects.create(title=title)
@@ -21,11 +22,11 @@ class JobMethodTests(TestCase):
         job.updateTotalMinutes()
         self.assertEqual(job.total_minutes, 0)
         
-        entry = create_time_entry(10, job)
+        entry = create_time_entry(10, job, "")
         job.updateTotalMinutes()
         self.assertEqual(job.total_minutes, 10)
         
-        entry = create_time_entry(10, job)
+        entry = create_time_entry(10, job, "")
         job.updateTotalMinutes()
         self.assertEqual(job.total_minutes, 20)
 
@@ -76,7 +77,6 @@ class JobViewTests(TestCase):
         self.assertNotContains(response, "test title")
 
 
-
 class JobFormTests(TestCase):
     
     def test_job_form_fields(self):
@@ -86,19 +86,55 @@ class JobFormTests(TestCase):
 class TimeEntryViewTests(TestCase):
 
     def test_time_entry_list_view_with_no_time_entrys(self):
-        pass
-
-    def test_time_entry_list_view_with_time_entry_no_job(self):
-        pass
+        response = self.client.get(reverse('time_keeper:time_entry_index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "<td>")
+        self.assertQuerysetEqual(response.context['time_entrys'], [])
 
     def test_time_entry_list_view_with_time_entry_and_job(self):
-        pass
+        job = create_job()
+        time_entry = create_time_entry(10, job, "test summary")
+        response = self.client.get(reverse('time_keeper:time_entry_index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test summary")
+        self.assertQuerysetEqual(response.context['time_entrys'], 
+            ["<TimeEntry: {}>".format(str(time_entry))])
+   
+    def test_time_entry_read_view(self):
+        job = create_job()
+        time_entry = create_time_entry(10, job, "test summary")
+        response = self.client.get(reverse('time_keeper:time_entry_detail', 
+            args=[time_entry.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test summary")
+    
+    def test_time_entry_update_view_get(self):
+        job = create_job()
+        time_entry = create_time_entry(10, job, "test summary")
+        response = self.client.get(reverse('time_keeper:time_entry_update', 
+            args=[time_entry.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "test summary")
+    
+    def test_time_entry_delete_view_get(self):
+        job = create_job()
+        time_entry = create_time_entry(10, job, "test summary")
+        response = self.client.get(reverse('time_keeper:time_entry_delete',
+            args=[time_entry.id]), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "test summary")
+
+
+class TimeEntryFormTests(TestCase):
+    pass
 
 
 class UtilTests(TestCase):
     
     def test_unit_string_singular(self):
-        pass
+        result = unit_string(1, "minute")
+        self.assertEqual(result, "minute")
 
     def test_unit_string_plural(self):
-        pass
+        result = unit_string(2, "minute")
+        self.assertEqual(result, "minutes")
