@@ -82,5 +82,65 @@ def delete_job(request, uuid):
     return redirect(reverse('time_keeper:job_index'))
 
 def list_time_entrys(request):
-    time_entries = TimeEntry.objects.all()
-    return render(request, 'time_keeper/index.html', {'objects': time_entries})
+    time_entrys = TimeEntry.objects.all()
+    return render(request, 'time_keeper/time_entry_index.html', {
+        'time_entrys': time_entrys,
+    })
+
+def read_time_entry(request, pk):
+    time_entry = get_object_or_404(TimeEntry, pk=pk)
+    return render(request, 'time_keeper/time_entry_detail.html', {'time_entry': time_entry})
+
+def create_time_entry(request):
+    '''
+    GET: Send form 
+    POST: Process form'''
+
+    if request.method == "GET":
+        form = TimeEntryForm()
+    elif request.method == "POST":
+        form = TimeEntryForm(request.POST)
+        if form.is_valid():
+            time_entry = form.save()
+            return redirect(reverse('time_keeper:time_entry_detail', args=(time_entry.pk,)))
+    
+    return render(request, 'time_keeper/form.html', {
+        'message': 'New Time Entry',
+        'forward_address': 'time_keeper:time_entry_create',
+        'form': form,
+    })
+
+def update_time_entry(request, pk):
+    '''
+    GET: Send form from model
+    POST: Update model from form'''
+    
+    time_entry = TimeEntry.objects.get(pk=pk)
+    
+    if request.method == "GET":
+        form = TimeEntryForm(instance=time_entry)
+    elif request.method == "POST":
+        form = TimeEntryForm(request.POST, instance=time_entry)
+        if form.is_valid():
+            time_entry = form.save()
+            return redirect(reverse('time_keeper:time_entry_detail', args=(time_entry.pk,)))
+
+    return render(request, 'time_keeper/form.html', {
+        'message': 'Update Time Entry',
+        'forward_address': 'time_keeper:time_entry_update',
+        'url_arg': pk,
+        'form': form,
+    })
+
+def delete_time_entry(request, pk):
+    if request.method == "GET":
+        time_entry = get_object_or_404(TimeEntry, pk=pk)
+        message = ''
+        try:
+            time_entry.delete()
+            message = 'Delete successful.'
+        except:
+            message = 'Object exists, but deletion failed.'
+    else:
+        return HttpResponseBadRequest('SWAP GET FOR POST IN delete_time_entry') # todo
+    return redirect(reverse('time_keeper:time_entry_index'))

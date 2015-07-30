@@ -1,0 +1,16 @@
+<table border=1>                                                                   
+  <th>Index</th>                                                                    
+  <th>Date</th>                                                                    
+  <th>Minutes Worked</th>                                                           
+  <th>Work Summary</th>                                                            
+  <th>Related Job</th>                                                             
+	<tr>                                                                           
+    <td>{{ time_entry.pk }}</td>                                                       
+    <td>{{ time_entry.date_stamp }}</td>                                               
+    <td>{{ time_entry.minutes_worked }}</td>                                          
+    <td>{{ time_entry.work_summary }}</td>                                            
+    <td>{{ time_entry.related_job }}</td>                                             
+  </tr>                                                                          
+</table>                                                                           
+</br>                                                                              
+<a href={% url 'time_keeper:time_entry_index' %}>Back</a> 

@@ -1,3 +1,12 @@
-{{ job }}
+<table border=1>                                                                   
+  <th>UUID</th>                                                                    
+  <th>Title</th>                                                                   
+  <th>Total Minutes</th>                                                           
+  <tr>                                                                           
+    <td>{{ job.id }}</td>                                                        
+    <td>{{ job.title }}</td>                                                     
+    <td>{{ job.total_minutes }}</td>                                             
+  </tr>                                                                          
+</table>  
 <br/>
 <a href={% url 'time_keeper:job_index' %}>Back</a>

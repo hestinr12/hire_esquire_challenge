@@ -1,0 +1,24 @@
+<table border=1>                                                                   
+  <th>Index</th>                                                                    
+  <th>Date</th>                                                                   
+  <th>Minutes Worked</th>                                                           
+  <th>Work Summary</th>
+	<th>Related Job</th>
+	<th>Actions</th>                         
+  {% for entry in time_entrys %}                                                            
+    <tr>                                                                           
+      <td>{{ entry.pk }}</td>                                                        
+      <td>{{ entry.date_stamp }}</td>                                                     
+      <td>{{ entry.minutes_worked }}</td>
+			<td>{{ entry.work_summary }}</td>
+			<td>{{ entry.related_job }}</td>                                            
+      <td>                                                                         
+        <a href={% url 'time_keeper:time_entry_detail' entry.pk %}>Read</a>                 
+        <a href={% url 'time_keeper:time_entry_update' entry.pk %}>Update</a>               
+        <a href={% url 'time_keeper:time_entry_delete' entry.pk %}>Delete</a>               
+      </td>                                                                        
+    </tr>                                                                          
+  {% endfor %}                                                                     
+</table>                                                                           
+</br>                                                                              
+<a href={% url 'time_keeper:time_entry_create' %}>Create New</a>  
