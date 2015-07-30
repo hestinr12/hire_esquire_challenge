@@ -12,6 +12,12 @@ class Job(models.Model):
     title = models.CharField(max_length=140)                                       
     total_minutes = models.PositiveIntegerField(default=0)
     
+    def updateTotalMinutes(self):
+        self.total_minutes = 0
+        for entry in self.timeentry_set.all():
+            self.total_minutes += entry.minutes_worked
+        self.save()
+
     def __str__(self):
         unit = unit_string(self.total_minutes, 'minute')
         return "{} - {} {}".format(self.title, self.total_minutes, unit)

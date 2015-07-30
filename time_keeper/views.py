@@ -94,6 +94,7 @@ def create_time_entry(request):
         form = TimeEntryForm(request.POST)
         if form.is_valid():
             time_entry = form.save()
+            time_entry.related_job.updateTotalMinutes()
             return redirect(reverse('time_keeper:time_entry_detail', args=(time_entry.pk,)))
     
     return render(request, 'time_keeper/form.html', {
@@ -115,6 +116,7 @@ def update_time_entry(request, pk):
         form = TimeEntryForm(request.POST, instance=time_entry)
         if form.is_valid():
             time_entry = form.save()
+            time_entry.related_job.updateTotalMinutes()
             return redirect(reverse('time_keeper:time_entry_detail', args=(time_entry.pk,)))
 
     return render(request, 'time_keeper/form.html', {
