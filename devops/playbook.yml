@@ -2,32 +2,35 @@
 - hosts: awstest
   sudo: yes
   tasks:
-    - name: Update all packages to latest
-      yum: name=* state=latest
+    - name: Update
+      apt: update_cache=yes
 
-    - name: Install nginx
-      yum: name=nginx state=latest  
-    
-    - name: Install dev tools
-      yum: name=gcc state=latest
- 
-    - name: Start nginx
-      service: name=nginx state=started
+    - name: Update all packages to latest
+      apt: upgrade=yes
 
     - name: Install git
-      yum: name=git state=latest
+      apt: name=git-core
+
+    - name: get build essentials
+      apt: name=build-essential
+
+    - name: get python dev
+      apt: name=python2.7-dev
+
+    - name: Get setup tools
+      apt: name=python-setuptools   
     
+    - name: install pip
+      easy_install: name=pip
+ 
     - name: Install virtualenv
-      yum: name=python-virtualenv state=latest
-    
+      command: sudo pip install virtualenv
+ 
     - name: Create app directory
       file: path=/var/app recurse=yes state=directory
 
     - name: Create venv
-      command: sudo /usr/bin/virtualenv /var/app/venv 
-
-    - name: install uwsgi
-      pip: name=uwsgi virtualenv=/var/app/venv
+      command: sudo virtualenv /var/app/venv 
 
     - name: Put public key on server
       copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0644
@@ -40,18 +43,21 @@
 
     - name: Install requirements
       pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
+    
+    - name: Install gcc
+      apt: name=gcc
+
+    - name: Install PCRE
+      apt: name=libpcre3
+ 
+    - name: Get uwsgi
+      pip: name=uwsgi virtualenv=/var/app/venv
 
     - name: Migrate database
       command: sudo /var/app/venv/bin/python /var/app/hire_esquire_challenge/manage.py migrate
       # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
-    - name: Cp in site_enabled nginx.conf
-      command: sudo cp /var/app/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/conf.d/
-
-    - name: Restart nginx
-      service: name=nginx state=restarted
-
-    - name: launch uwsgi
-      command: sudo /var/app/venv/bin/uwsgi --socket :8000 --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+    - name: Run server
+      command: sudo /var/app/venv/bin/uwsgi --socket 0.0.0.0:80 --protocol=http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py &
       # environment:
         # PATH: /var/app/venv/bin
