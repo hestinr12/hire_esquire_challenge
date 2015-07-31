@@ -1,0 +1,55 @@
+---
+- hosts: awstest
+  sudo: yes
+  tasks:
+    - name: Update all packages to latest
+      yum: name=* state=latest
+
+    - name: Install nginx
+      yum: name=nginx state=latest  
+      notify:
+        - start nginx
+    
+    - name: Install dev tools
+      yum: name=gcc state=latest
+ 
+    - name: Start nginx
+      service: name=nginx state=started
+
+    - name: Install git
+      yum: name=git state=latest
+    
+    - name: Install virtualenv
+      yum: name=python-virtualenv state=latest
+    
+    - name: Create app directory
+      file: path=/var/app recurse=yes state=directory
+
+    - name: Create venv
+      command: sudo /usr/bin/virtualenv /var/app/venv 
+
+    - name: install uwsgi
+      pip: name=uwsgi virtualenv=/var/app/venv
+
+    - name: Put key on server
+      copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0600
+
+    - name: Clone repo
+      git: repo=git@github.com:hestinr12/hire_esquire_challenge.git accept_hostkey=yes dest=/var/app version=ansible key_file=/var/app/id_rsa.pub force=yes
+
+    - name: Install requirements
+      pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
+
+    - name: Migrate database
+      django_manage: command=migrate
+
+    - name: Link nginx.conf into nginx/site_enable
+      command: sudo ln -s /var/app/hire_esquire_challenge/devops/nginx.conf /etc/nginx/sites-enabled/
+
+    - name: Restart nginx
+      service: name=nginx state=restarted
+
+    - name: launch uwsgi
+      command: sudo uwsgi --socket :8000 --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+      environment:
+        PATH: /var/app/venv/bin
