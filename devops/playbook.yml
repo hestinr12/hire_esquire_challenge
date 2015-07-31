@@ -45,11 +45,8 @@
       command: sudo /var/app/venv/bin/python /var/app/hire_esquire_challenge/manage.py migrate
       # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
-    - name: Link nginx.conf into nginx/
-      command: sudo cp /var/app/hire_esquire_challenge/devops/nginx.conf /etc/nginx/
-
     - name: Cp in site_enabled nginx.conf
-      command: sudo cp /var/app/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/site_enabled
+      command: sudo cp /var/app/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/conf.d/
 
     - name: Restart nginx
       service: name=nginx state=restarted
