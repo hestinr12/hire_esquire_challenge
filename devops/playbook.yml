@@ -58,6 +58,6 @@
       # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
     - name: Run server
-      command: sudo /var/app/venv/bin/uwsgi --socket 0.0.0.0:80 --protocol=http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py &
+      command: sudo /var/app/venv/bin/uwsgi --ini /var/app/hire_esquire_challenge/devops/wsgi.ini
       # environment:
         # PATH: /var/app/venv/bin
