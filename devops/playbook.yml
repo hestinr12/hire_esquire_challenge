@@ -7,8 +7,6 @@
 
     - name: Install nginx
       yum: name=nginx state=latest  
-      notify:
-        - start nginx
     
     - name: Install dev tools
       yum: name=gcc state=latest
@@ -31,25 +29,32 @@
     - name: install uwsgi
       pip: name=uwsgi virtualenv=/var/app/venv
 
-    - name: Put key on server
-      copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0600
+    - name: Put public key on server
+      copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0644
+
+    - name: Put private key on server
+      copy: src=~/.ssh/id_rsa dest=/var/app/id_rsa mode=0600
 
     - name: Clone repo
-      git: repo=git@github.com:hestinr12/hire_esquire_challenge.git accept_hostkey=yes dest=/var/app version=ansible key_file=/var/app/id_rsa.pub force=yes
+      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
 
     - name: Install requirements
       pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
 
     - name: Migrate database
-      django_manage: command=migrate
+      command: sudo /var/app/venv/bin/python /var/app/hire_esquire_challenge/manage.py migrate
+      # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
-    - name: Link nginx.conf into nginx/site_enable
-      command: sudo ln -s /var/app/hire_esquire_challenge/devops/nginx.conf /etc/nginx/sites-enabled/
+    - name: Link nginx.conf into nginx/
+      command: sudo cp /var/app/hire_esquire_challenge/devops/nginx.conf /etc/nginx/
+
+    - name: Cp in site_enabled nginx.conf
+      command: sudo cp /var/app/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/site_enabled
 
     - name: Restart nginx
       service: name=nginx state=restarted
 
     - name: launch uwsgi
-      command: sudo uwsgi --socket :8000 --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
-      environment:
-        PATH: /var/app/venv/bin
+      command: sudo /var/app/venv/bin/uwsgi --socket :8000 --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+      # environment:
+        # PATH: /var/app/venv/bin
