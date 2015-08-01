@@ -3,7 +3,7 @@
 The hire an Esquire challenge was to build a CRUD service with the following
 requirements:
 
- * Models
+#### Models
    * Job
      * id: uuid (primary key)
      * TimeEntrys: relationship
@@ -14,7 +14,7 @@ requirements:
      * work_summary: entry
      * related_job: uuid
 
- * Deployment
+#### Deployment
    * Dependencies installed from requirements.txt into a virtualenv
    * Stored in GitHub (or BitBucket)
    * README.md included
