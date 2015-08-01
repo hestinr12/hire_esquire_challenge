@@ -9,7 +9,7 @@ requirements:
      * TimeEntrys: relationship
      * total_minutes: unsignedint
    * TimeEntry
-     * minutes_worked: unsingnedint
+     * minutes_worked: unsignedint
      * date_stamp: date
      * work_summary: entry
      * related_job: uuid
