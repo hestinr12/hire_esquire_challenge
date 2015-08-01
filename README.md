@@ -4,22 +4,22 @@ The hire an Esquire challenge was to build a CRUD service with the following
 requirements:
 
  * Models
-  * Job
-   * id: uuid (primary key)
-   * TimeEntrys: relationship
-   * total_minutes: unsignedint
-  * TimeEntry
-   * minutes_worked: unsingnedint
-   * date_stamp: date
-   * work_summary: entry
-   * related_job: uuid
+   * Job
+     * id: uuid (primary key)
+     * TimeEntrys: relationship
+     * total_minutes: unsignedint
+   * TimeEntry
+     * minutes_worked: unsingnedint
+     * date_stamp: date
+     * work_summary: entry
+     * related_job: uuid
 
  * Deployment
-  * Dependencies installed from requirements.txt into a virtualenv
-  * Stored in GitHub (or BitBucket)
-  * README.md included
-  * All scripts included
-  * Use Ansible for deployment to localhost or ec2
+   * Dependencies installed from requirements.txt into a virtualenv
+   * Stored in GitHub (or BitBucket)
+   * README.md included
+   * All scripts included
+   * Use Ansible for deployment to localhost or ec2
 
 
 ## Current State
@@ -29,14 +29,14 @@ version of a stable product. Not production ready. The current stack operates
 using the following software:
 
  * Server
-  * ec2
-  * Ubuntu 14.04
-  * uWSGI
-  * virtualenv
-  * python2.7
-  * Django
+   * ec2
+   * Ubuntu 14.04
+   * uWSGI
+   * virtualenv
+   * python2.7
+   * Django
  * Devops
-  * Ansible
+   * Ansible
 
 ### Installed packages and services notes
 
@@ -62,12 +62,12 @@ There is a basic devops directory for devops related files. Included now are:
 The steps for deploying are as follows:
  1. Push all code to be deployed into master of repo
  2. [Set up a deploy key](https://developer.github.com/guides/managing-deploy-keys/#deploy-keys)
-  * Make sure to name them:
-   * Public key: id_rsa.pub
-   * Private key: id_rsa
-   * Note: Will use more dynamic method in future
-  * Make sure to store them in ~/.ssh/ on your local machine
-  * There is a lot of room for automation/help in this part
+   * Make sure to name them:
+     * Public key: id_rsa.pub
+     * Private key: id_rsa
+     * Note: Will use more dynamic method in future
+   * Make sure to store them in ~/.ssh/ on your local machine
+   * There is a lot of room for automation/help in this part
  3. Run `ansible-playbook playbook.yml`
 
 ### Notes
