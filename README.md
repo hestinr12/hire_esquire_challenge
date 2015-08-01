@@ -96,6 +96,7 @@ here...
  * Pretty much everything listed in [the Django Deployment checklist](https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/)
    * These steps are needed to ensure the integrity of the Django application
    * Which very much obviously includes disabling the debug modes (which are still enabled at HEAD >.<')
+   * The secret key for Django is still published in the settings, this needs fixed!
  * Research and add the correct configuration for setting up uWSGI as a daemon
    * The uWSGI service will be responsible for the interface between the web and the application, so we have to make sure it stays alive
    * A lot of people seemed to use `emperor`...?
