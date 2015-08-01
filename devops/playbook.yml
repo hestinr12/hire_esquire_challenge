@@ -8,17 +8,15 @@
     - name: Update all packages to latest
       apt: upgrade=yes
 
-    - name: Install git
-      apt: name=git-core
-
-    - name: get build essentials
-      apt: name=build-essential
-
-    - name: get python dev
-      apt: name=python2.7-dev
-
-    - name: Get setup tools
-      apt: name=python-setuptools   
+    - name: install relevant packages
+      apt: name={{ item }}
+      with_items:
+        - git-core
+        - build-essential
+        - python2.7-dev
+        - python-setuptools
+        - gcc
+        - libpcre3
     
     - name: install pip
       easy_install: name=pip
@@ -32,10 +30,10 @@
     - name: Create venv
       command: sudo virtualenv /var/app/venv 
 
-    - name: Put public key on server
+    - name: Put repo public key on server
       copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0644
 
-    - name: Put private key on server
+    - name: Put repo private key on server
       copy: src=~/.ssh/id_rsa dest=/var/app/id_rsa mode=0600
 
     - name: Clone repo
@@ -44,12 +42,6 @@
     - name: Install requirements
       pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
     
-    - name: Install gcc
-      apt: name=gcc
-
-    - name: Install PCRE
-      apt: name=libpcre3
- 
     - name: Get uwsgi
       pip: name=uwsgi virtualenv=/var/app/venv
 
@@ -58,6 +50,8 @@
       # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
     - name: Run server
-      command: sudo /var/app/venv/bin/uwsgi --ini /var/app/hire_esquire_challenge/devops/wsgi.ini
+      command: sudo /var/app/venv/bin/uwsgi --socket 0.0.0.0:80 --protocol http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+      async: 45
+      poll: 0
       # environment:
         # PATH: /var/app/venv/bin
