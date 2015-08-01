@@ -36,8 +36,10 @@ using the following software:
    * virtualenv
    * python2.7
    * Django
+   * sqlite
  * Devops
    * Ansible
+   * AWS ec2
 
 #### Installed packages and services notes
 
@@ -46,20 +48,23 @@ configurations weren't successful. Future details on a solution coming in the
 future. For now, the Django server runs with behind uWSGI, which run directly
 against the web.
 
-#### Devops Notes
-
-The playbook in /devops should correctly deploy the code in the 
-hire_esquire_challenge repo on an AWS EC2 instance with the standard Ubuntu.
-See below for more details on setting up Ansible with this repo.
 
 
 
 ## Deployment
 
+#### Devops Notes
+
+The playbook was only tested with AWS, but there shouldn't be any issues
+when running locally, just match the version of Ubuntu used by Amazon as
+best as possible.
+
 There is a basic devops directory for devops related files. Included now are:
 
  * playbook.yml for Ansible
  * Unused Nginx files
+
+#### Procedure
 
 The steps for deploying are as follows:
  1. Push all code to be deployed into master of repo
@@ -77,7 +82,7 @@ The steps for deploying are as follows:
 This is a first attempt at using Ansible, so some revisions are likely. The
 playbook is very simplistic, and needs reinforcement. There are plenty of
 guides for helping get the deploy key set up. Make sure to add this to the repo
-through the side!
+through the side! Ideally, the setup process will become more "one button".
 
 
 
