@@ -22,6 +22,7 @@ requirements:
    * Use Ansible for deployment to localhost or ec2
 
 
+
 ## Current State
 
 The current commit of master (at this stage) should be treated as an early 
@@ -38,18 +39,19 @@ using the following software:
  * Devops
    * Ansible
 
-### Installed packages and services notes
+#### Installed packages and services notes
 
 As you may have noticed, there is no Nginx. Attempts were made, but
 configurations weren't successful. Future details on a solution coming in the 
 future. For now, the Django server runs with behind uWSGI, which run directly
 against the web.
 
-### Devops Notes
+#### Devops Notes
 
 The playbook in /devops should correctly deploy the code in the 
 hire_esquire_challenge repo on an AWS EC2 instance with the standard Ubuntu.
 See below for more details on setting up Ansible with this repo.
+
 
 
 ## Deployment
@@ -70,10 +72,40 @@ The steps for deploying are as follows:
    * There is a lot of room for automation/help in this part
  3. Run `ansible-playbook playbook.yml`
 
-### Notes
+#### Notes
 
 This is a first attempt at using Ansible, so some revisions are likely. The
 playbook is very simplistic, and needs reinforcement. There are plenty of
 guides for helping get the deploy key set up. Make sure to add this to the repo
 through the side!
 
+
+
+## Changes needed for Production
+
+There is a good amount of prep needed to be ready for production. Let's see
+here...
+ * Set up a distributed database
+   * Setting a distributed memory store (as opposed to in memory/on disk) will allow the app to scale accross machines
+   * Allows for larger storage capacity, plus many other benefits
+ * Pretty much everything listed in [the Django Deployment checklist](https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/)
+   * These steps are needed to ensure the integrity of the Django application
+   * Which very much obviously includes disabling the debug modes (which are still enabled at HEAD >.<')
+ * Research and add the correct configuration for setting up uWSGI as a daemon
+   * The uWSGI service will be responsible for the interface between the web and the application, so we have to make sure it stays alive
+   * A lot of people seemed to use `emperor`...?
+ * Properly add and configure Nginx for working with uWSGI
+   * Nginx is a great lightweight solution as reverse proxy and can help more easily scale out the app
+ * Configure automated testing, build, and deploy scripts to use with CI service/Ansible/AWS
+   * Things like:
+     * Custom AMI for EC2 (help server boot times)
+     * Setup autoscaling groups
+     * Using Shippable with the current `python manage.py test`
+     * [Dynamic Inventory](https://docs.ansible.com/ansible/intro_dynamic_inventory.html) for easier large scale AWS deployments
+     * Automate all the things!
+
+
+
+
+
+:D
