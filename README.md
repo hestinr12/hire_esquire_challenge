@@ -75,7 +75,10 @@ The steps for deploying are as follows:
      * Note: Will use more dynamic method in future
    * Make sure to store them in ~/.ssh/ on your local machine
    * There is a lot of room for automation/help in this part
- 3. Run `ansible-playbook playbook.yml`
+ 3. Launch an ec2 instance (ubuntu AMI) with a key-pair, store the key-pair in ~/.ssh/
+ 4. Add the newly created ec2 ip to /etc/ansible/hosts
+   * `<ec2_ip> ansible_ssh_private_key_file=<path_to_ec2_pem_key> ansible_ssh_user=ubuntu`
+ 5. Run `ansible-playbook playbook.yml`
 
 #### Notes
 
