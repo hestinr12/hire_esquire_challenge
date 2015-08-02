@@ -1,3 +1,6 @@
+{% extends "time_keeper/base.html" %}                                              
+                                                                                   
+{% block content %} 
 {% if message %}
 	<h1>{{ message }}</h1>
 	<br/>
@@ -11,4 +14,4 @@
 	{{ form.as_p }}
 	<input type=submit value='Submit' />
 </form>
-
+{% endblock content %}
