@@ -1,3 +1,6 @@
+{% extends "time_keeper/base.html" %}                                              
+                                                                                   
+{% block content %} 
 <table border=1>                                                                   
   <th>Index</th>                                                                    
   <th>Date</th>                                                                    
@@ -13,4 +16,5 @@
   </tr>                                                                          
 </table>                                                                           
 </br>                                                                              
-<a href={% url 'time_keeper:time_entry_index' %}>Time Entry</a> 
+<a href={% url 'time_keeper:time_entry_index' %}>Time Entry</a>
+{% endblock content %}

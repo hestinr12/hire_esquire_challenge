@@ -1,5 +1,5 @@
 from .models import Job, TimeEntry
-from django.forms import ModelForm, HiddenInput
+from django.forms import ModelForm, TextInput
 
 
 class JobForm(ModelForm):
@@ -19,3 +19,6 @@ class TimeEntryForm(ModelForm):
             'minutes_worked',
             'related_job',
         ]
+        widgets = {
+            'date_stamp': TextInput(attrs={'placeholder': 'MM/DD/YYYY'}),
+        }

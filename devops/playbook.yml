@@ -1,0 +1,60 @@
+---
+- hosts: awstest
+  sudo: yes
+  tasks:
+    - name: Update
+      apt: update_cache=yes
+
+    - name: Update all packages to latest
+      apt: upgrade=yes
+
+    - name: install relevant packages
+      apt: name={{ item }}
+      with_items:
+        - git-core
+        - build-essential
+        - python2.7-dev
+        - python-setuptools
+        - gcc
+        - libpcre3
+    
+    - name: install pip
+      easy_install: name=pip
+ 
+    - name: Install virtualenv
+      command: sudo pip install virtualenv
+ 
+    - name: Create app directory
+      file: path=/var/app recurse=yes state=directory
+
+    - name: Create venv
+      command: sudo virtualenv /var/app/venv 
+
+    - name: Put repo public key on server
+      copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0644
+
+    - name: Put repo private key on server
+      copy: src=~/.ssh/id_rsa dest=/var/app/id_rsa mode=0600
+
+    - name: Clone repo
+      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=master accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
+
+    - name: Touch uwsgi trigger file 
+      file: path=/var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
+
+    - name: Install requirements
+      pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
+    
+    - name: Get uwsgi
+      pip: name=uwsgi virtualenv=/var/app/venv
+
+    - name: Migrate database
+      command: sudo /var/app/venv/bin/python /var/app/hire_esquire_challenge/manage.py migrate
+      # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
+
+    - name: Run server
+      shell: sudo /var/app/venv/bin/uwsgi --touch-reload /var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger --socket 0.0.0.0:80 --protocol http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+      async: 999999
+      poll: 0
+      # environment:
+        # PATH: /var/app/venv/bin

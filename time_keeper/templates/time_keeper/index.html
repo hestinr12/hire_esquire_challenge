@@ -1,2 +1,6 @@
+{% extends "time_keeper/base.html" %}                                              
+                                                                                   
+{% block content %} 
 <a href={% url 'time_keeper:job_index' %}>Job</a><br/>
-<a href={% url 'time_keeper:time_entry_index' %}>Time Entry</a><br/>
+<a href={% url 'time_keeper:time_entry_index' %}>Time Entry</a><br>
+{% endblock content %}
