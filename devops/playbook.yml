@@ -37,7 +37,10 @@
       copy: src=~/.ssh/id_rsa dest=/var/app/id_rsa mode=0600
 
     - name: Clone repo
-      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
+      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=feature/uwsgi-reload accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
+
+    - name: Touch uwsgi trigger file 
+      file: path=/var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
 
     - name: Install requirements
       pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
@@ -50,7 +53,7 @@
       # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
     - name: Run server
-      shell: sudo /var/app/venv/bin/uwsgi --socket 0.0.0.0:80 --protocol http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+      shell: sudo /var/app/venv/bin/uwsgi --touch-reload /var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger --socket 0.0.0.0:80 --protocol http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
       async: 999999
       poll: 0
       # environment:
