@@ -37,7 +37,7 @@
       copy: src=~/.ssh/id_rsa dest=/var/app/id_rsa mode=0600
 
     - name: Clone repo
-      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=feature/uwsgi-reload accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
+      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=master accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
 
     - name: Touch uwsgi trigger file 
       file: path=/var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
