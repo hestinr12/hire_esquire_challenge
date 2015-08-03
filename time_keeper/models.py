@@ -32,7 +32,7 @@ class TimeEntry(models.Model):
     def __str__(self):
         unit = unit_string(self.minutes_worked, 'minute')
         return "{}: {} {} on {}".format(
-            self.work_summary,
+            self.related_job.title,
             self.minutes_worked,
             unit,
             self.date_stamp)
