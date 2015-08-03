@@ -62,6 +62,8 @@ best as possible.
 There is a basic devops directory for devops related files. Included now are:
 
  * playbook.yml for Ansible
+ * uwsgi_reload.trigger
+   * See the ansible `playbook.yml` for how this is used (uwsgi [touch-reload](https://uwsgi-docs.readthedocs.org/en/latest/Options.html#touch-reload) setting)
  * Unused Nginx files
 
 #### Procedure
