@@ -40,8 +40,11 @@
     - name: Clone repo
       git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=nginx accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
 
-    - name: start nginx                                                            
-      command: sudo nginx -c /var/app/hire_esquire_challenge/devops/nginx_hire.conf  
+    - name: Delete default nginx site-available
+      file: path=/etc/nginx/sites-enabled/default state=absent
+
+    - name: Copy our app conf into nginx/site-available
+      command: sudo ln -sf /var/app/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/sites-enabled/
 
     - name: Touch uwsgi trigger file 
       file: path=/var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
@@ -60,5 +63,9 @@
       shell: sudo /var/app/venv/bin/uwsgi --touch-reload /var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger --socket 0.0.0.0:8000 --protocol http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
       async: 999999
       poll: 0
-      # environment:
-        # PATH: /var/app/venv/bin
+
+    - name: start nginx
+      service: name=nginx state=started
+
+    - name: reload nginx
+      service: name=nginx state=restarted
