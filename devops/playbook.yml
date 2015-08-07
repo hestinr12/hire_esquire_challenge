@@ -29,7 +29,7 @@
       file: path=/var/app recurse=yes state=directory
 
     - name: Create venv
-      command: sudo virtualenv /var/app/venv 
+      command: sudo virtualenv /etc/nginx/sites-available/venv 
 
     - name: Put repo public key on server
       copy: src=~/.ssh/id_rsa.pub dest=/var/app/id_rsa.pub mode=0644
@@ -38,29 +38,29 @@
       copy: src=~/.ssh/id_rsa dest=/var/app/id_rsa mode=0600
 
     - name: Clone repo
-      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=nginx accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
+      git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=nginx accept_hostkey=yes dest=/etc/nginx/sites-available/hire_esquire_challenge key_file=/var/app/id_rsa
 
     - name: Delete default nginx site-available
       file: path=/etc/nginx/sites-enabled/default state=absent
 
     - name: Copy our app conf into nginx/site-available
-      command: sudo ln -sf /var/app/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/sites-enabled/
+      command: sudo ln -sf /etc/nginx/sites-available/hire_esquire_challenge/devops/nginx_hire.conf /etc/nginx/sites-enabled/
 
     - name: Touch uwsgi trigger file 
-      file: path=/var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
+      file: path=/etc/nginx/sites-available/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
 
     - name: Install requirements
-      pip: requirements=/var/app/hire_esquire_challenge/requirements.txt virtualenv=/var/app/venv
+      pip: requirements=/etc/nginx/sites-available/hire_esquire_challenge/requirements.txt virtualenv=/etc/nginx/sites-available/venv
     
     - name: Get uwsgi
-      pip: name=uwsgi virtualenv=/var/app/venv
+      pip: name=uwsgi virtualenv=/etc/nginx/sites-available/venv
 
     - name: Migrate database
-      command: sudo /var/app/venv/bin/python /var/app/hire_esquire_challenge/manage.py migrate
+      command: sudo /etc/nginx/sites-available/venv/bin/python /etc/nginx/sites-available/hire_esquire_challenge/manage.py migrate
       # django_manage: command=migrate app_path=/var/app/hire_esquire_challenge
 
     - name: Run server
-      shell: sudo /var/app/venv/bin/uwsgi --touch-reload /var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger --socket 0.0.0.0:8000 --protocol http --chdir /var/app/hire_esquire_challenge/ --wsgi-file /var/app/hire_esquire_challenge/main_site/wsgi.py
+      shell: sudo /etc/nginx/sites-available/venv/bin/uwsgi --touch-reload /etc/nginx/sites-available/hire_esquire_challenge/devops/uwsgi_reload.trigger --socket 0.0.0.0:8000 --protocol http --chdir /etc/nginx/sites-available/hire_esquire_challenge/ --wsgi-file /etc/nginx/sites-available/hire_esquire_challenge/main_site/wsgi.py
       async: 999999
       poll: 0
 
