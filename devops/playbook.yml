@@ -19,9 +19,6 @@
         - libpcre3
         - nginx
     
-    - name: start nginx
-      command: sudo nginx -c /var/app/hire_esquire_challenge/devops/nginx_hire.conf     
-
     - name: install pip
       easy_install: name=pip
  
@@ -42,6 +39,9 @@
 
     - name: Clone repo
       git: repo=ssh://git@github.com/hestinr12/hire_esquire_challenge.git version=nginx accept_hostkey=yes dest=/var/app/hire_esquire_challenge key_file=/var/app/id_rsa
+
+    - name: start nginx                                                            
+      command: sudo nginx -c /var/app/hire_esquire_challenge/devops/nginx_hire.conf  
 
     - name: Touch uwsgi trigger file 
       file: path=/var/app/hire_esquire_challenge/devops/uwsgi_reload.trigger state=touch
